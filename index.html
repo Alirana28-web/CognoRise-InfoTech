@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>BMI Calculator</h1>
+    <form id="bmiForm">
+      <div class="form-group">
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter your weight" required>
+      </div>
+      <div class="form-group">
+        <label for="height">Height (cm):</label> <!-- Changed to cm for clarity -->
+        <input type="number" id="height" placeholder="Enter your height in cm" step="0.01" required>
+      </div>
+      <button type="button" class="btn">Calculate BMI</button> <!-- Added class 'btn' for JavaScript -->
+    </form>
+    <div class="result">
+        Your BMI:<p id="bmiValue"> </p>
+        Status: <p id="bmiStatus"> </p> 
+    </div>
+  </div>
+  <script src="script.js"></script> 
+</body>
+</html>
