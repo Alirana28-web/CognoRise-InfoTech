@@ -1,54 +1,91 @@
-const amountInput = document.getElementById("amount");
-const fromCurrencySelect = document.getElementById("fromCurrency");
-const toCurrencySelect = document.getElementById("toCurrency");
-const convertBtn = document.getElementById("convertBtn");
-const resultDisplay = document.getElementById("result");
+document.addEventListener('DOMContentLoaded', loadTasks);
 
-// API URL for fetching exchange rates
-const API_URL = "https://api.exchangerate-api.com/v4/latest/USD";
-console.log(API_URL)
-async function fetchCurrencies() {
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    const currencies = Object.keys(data.rates);
+const addTaskButton = document.getElementById('add-task-btn');
+const taskInput = document.getElementById('task-input');
+const taskList = document.getElementById('task-list');
 
-    // Populate the dropdowns
-    currencies.forEach(currency => {
-        const optionFrom = document.createElement("option");
-        optionFrom.value = currency;
-        optionFrom.textContent = currency;
-        fromCurrencySelect.appendChild(optionFrom);
+addTaskButton.addEventListener('click', addTask);
 
-        const optionTo = document.createElement("option");
-        optionTo.value = currency;
-        optionTo.textContent = currency;
-        toCurrencySelect.appendChild(optionTo);
-    });
+function addTask() {
+  const taskText = taskInput.value.trim();
+  
+  if (taskText) {
+    const task = {
+      id: Date.now(),
+      text: taskText
+    };
+
+    const tasks = getTasks();
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    renderTasks();
+    taskInput.value = '';
+  }
 }
 
-async function convertCurrency() {
-    const amount = parseFloat(amountInput.value);
-    const fromCurrency = fromCurrencySelect.value;
-    const toCurrency = toCurrencySelect.value;
-
-    if (isNaN(amount) || amount <= 0) {
-        resultDisplay.textContent = "Please enter a valid amount.";
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}`);
-        const data = await response.json();
-        const fromRate = data.rates[fromCurrency];
-        const toRate = data.rates[toCurrency];
-
-        const convertedAmount = (amount / fromRate) * toRate;
-        resultDisplay.textContent = `Converted Amount: ${convertedAmount.toFixed(2)} ${toCurrency}`;
-    } catch (error) {
-        resultDisplay.textContent = "Error fetching exchange rates.";
-    }
+function getTasks() {
+  const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  return tasks;
 }
 
-convertBtn.addEventListener("click", convertCurrency);
+function renderTasks() {
+  const tasks = getTasks();
+  taskList.innerHTML = '';
 
-fetchCurrencies();
+  tasks.forEach(task => {
+    const li = document.createElement('li');
+    li.setAttribute('data-id', task.id);
+    
+    const span = document.createElement('span');
+    span.textContent = task.text;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', deleteTask);
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.classList.add('edit-btn');
+    editBtn.addEventListener('click', editTask);
+
+    li.appendChild(span);
+    li.appendChild(editBtn);
+    li.appendChild(deleteBtn);
+
+    taskList.appendChild(li);
+  });
+}
+
+// Delete task
+function deleteTask(e) {
+  const taskId = e.target.parentElement.getAttribute('data-id');
+  const tasks = getTasks().filter(task => task.id != taskId);
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  renderTasks();
+}
+
+function editTask(e) {
+  const taskId = e.target.parentElement.getAttribute('data-id');
+  const tasks = getTasks();
+  const task = tasks.find(task => task.id == taskId);
+  
+  taskInput.value = task.text;
+  deleteTask(e); 
+
+  addTaskButton.textContent = 'Update Task';
+  addTaskButton.removeEventListener('click', addTask);
+  addTaskButton.addEventListener('click', function updateTask() {
+    task.text = taskInput.value.trim();
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTasks();
+    taskInput.value = '';
+    addTaskButton.textContent = 'Add Task';
+    addTaskButton.removeEventListener('click', updateTask);
+    addTaskButton.addEventListener('click', addTask);
+  });
+}
+
+function loadTasks() {
+  renderTasks();
+}

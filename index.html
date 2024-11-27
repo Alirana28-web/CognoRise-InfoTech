@@ -1,35 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency Converter</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <h1>Currency Converter</h1>
-        
-        <div class="converter">
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" placeholder="Enter amount" />
-            
-            <label for="fromCurrency">From Currency:</label>
-            <select id="fromCurrency">
+  <div class="todo-container">
+    <h1>To-Do List</h1>
+    <input type="text" id="task-input" placeholder="Enter your task...">
+    <button id="add-task-btn">Add Task</button>
+    <ul id="task-list"></ul>
+  </div>
 
-            </select>
-            
-            <label for="toCurrency">To Currency:</label>
-            <select id="toCurrency">
-            </select>
-
-            <button id="convertBtn">Convert</button>
-        </div>
-
-        <h2 id="result">Converted Amount: </h2>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
